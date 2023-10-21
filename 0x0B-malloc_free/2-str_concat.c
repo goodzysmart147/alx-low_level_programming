@@ -19,12 +19,14 @@ char *str_concat(char *s1, char *s2)
 	if (!s1)
 		s1 = "";
 	else
-		while (*(s1 + size1++));
+		while
+			(*(s1 + size1++));
 
 	if (!s2)
 		s2 = "";
 	else
-		while (*(s2 + size2++));
+		while
+		       (*(s2 + size2++));
 
 	size = size1 + size2 - 1;
 	newstr = malloc(size * sizeof(char));
