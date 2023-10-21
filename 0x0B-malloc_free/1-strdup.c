@@ -1,16 +1,12 @@
 #include <stdlib.h>
-#include "main.h"
 
 /*
- * _strdup - create a pointer to a new string.
- * which is a duplicate of the string str.
- * memory for the new string is obtained with malloc.
+ * _strdup - duplicate a steing into newly allocated array.
  *
- * @str: a pointer to a string.
+ * @str: string to duplicate.
  *
- * Return: a pointer to the array, or NULL if it fails.
+ * Return: pointer to new string.
  */
-
 char *_strdup(char *str)
 {
 	char *ptr, *ret;
