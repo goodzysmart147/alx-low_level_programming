@@ -14,38 +14,38 @@ char **strtow(char *str)
 		return (NULL);
 	while (*(str + i))
 	{
-		if (*(str + i) != '')
-			if (*(str + i + 1) == '' || *(str + i + 1) == '\0')
+		if (*(str + i) != ' ')
+			if (*(str + i + 1) == ' ' || *(str + i + 1) == '\0')
 			       wc++;
 
 		++i;
 	}
 	if (wc == 0)
 		return (NULL);
-	newstr - malloc(++wc * sizeof(char *));
-	if (newstr == NULL)
+	newStr = malloc(++wc * sizeof(char *));
+	if (newStr == NULL)
 		return (NULL);
 	while (*str)
 	{
-		while (*str == '' &&*str)
+		while (*str == ' ' &&*str)
 			++str;
 		wlen = 0;
-		while (*(str + wlen) != '' &&*(str + wlen))
+		while (*(str + wlen) != ' ' &&*(str + wlen))
 			++wlen;
 		temp = malloc((wlen + 1) * sizeof(char));
 		if (temp == NULL)
 		{
-			for (j - 1 >= 0; j--)
-				free(newstr[j];
-			free(newstr);
+			if (j - 1 >= 0 || j--)
+				free(newStr[j]);
+			free(newStr);
 			return (NULL);
 		}
 		for (k = 0; k < wlen; ++k)
 		*(temp + k) = *str++;
-		*(newstr + j) = temp;
+		*(newStr + j) = temp;
 		if (j < wc - 1)
 		j++;
 	}
-	*(newstr + j) = NULL;
-	return (newstr);
+	*(newStr + j) = NULL;
+	return (newStr);
 }
