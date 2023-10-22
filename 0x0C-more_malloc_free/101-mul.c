@@ -2,142 +2,301 @@
 #include "main.h"
 
 /*
- * _prntstr - prints a string
- *
- * @s: string to print
+ * print_str - Print a given string
+ * @str: String to print
  */
-void _prntstr(char *s)
+void print_str(char *str)
 {
-	while (*s)
-		_putchar(*s++);
-}
+	int i;
 
-/*
- * numstrchk - checks arg array to see if the are numeric strings, converts
- * from ascii to byte int, and returns their length. Segfault on null pointer.
- *
- * @s: string to check
- *
- * Return: Length of string. Exit 98 if not numeric.
- */
-long int numstrchk(char *s)
-{
-	long int len = 0;
-
-	if (*s == 0)
+	i = 0;
+	while (str[i] != '\0')
 	{
-		_prntstr("Error\n");
-		exit(98);
+		_putchar(str[i]);
+		i++;
 	}
+	_putchar('\n');
+}
 
-	while (*s)
+/*
+ * print_err - Print the word "Error"
+ */
+void print_err(void)
+{
+	_putchar('E');
+	_putchar('r');
+	_putchar('r');
+	_putchar('o');
+	_putchar('r');
+	_putchar('\n');
+	exit(98);
+}
+
+/*
+ * rev_string - Reverse the given string
+ * @s: The string to reverse
+ * @size: Size of string to reverse
+ * Return: Nothing
+ */
+void rev_string(char *s, int size)
+{
+	char *str;
+	int i, r;
+
+	str = malloc(size);
+	if (str == NULL)
+		print_err();
+	i = 0;
+	while (*(s + i) != 0)
 	{
-		if (*s < '0' || *s > '9')
-		{
-			_prntstr("Error\n");
-			exit(98);
-		}
-		*s -= '0';
-		len++;
-		s++;
+		str[i] = *(s + i);
+		i++;
 	}
-	return (len);
-}
-
-/*
- * _calloc_buffer - allocate a block of memory of size * num and init to '0'
- *
- * @num: number of elements to allocate
- * @size: size of element
- *
- * Return: pointer to allocated space, exit 98 on failure
- */
-void *_calloc_buffer(long int num, long int size)
-{
-	void *ret;
-	char *ptr;
-
-	ret = malloc(num * size);
-	if (ret == 0)
+	r = i - 1;
+	i = 0;
+	while (r > 0)
 	{
-		exit(98);
+		*(s + r) = str[i];
+		r--;
+		i++;
 	}
-
-	size = size * num;
-	ptr = ret;
-	ptr[--size] = 0;
-	while (size--)
-		ptr[size] = '0';
-
-	return (ret);
+	*(s + r) = str[i];
+	free(str);
 }
 
 /*
- * trimzero - moves pointer position to after last leading 0 in a string,
- * or last zero if all zeros
+ * str_len - Find the length of a given string
+ * @str: String to find the length of
  *
- * @s: char * we want to move
- *
- * Return: new position
+ * Return: Length of the string
  */
-char *trimzero(char *s)
+unsigned int str_len(char *str)
 {
-	while (*s == '0')
-		if (*(s + 1) != 0)
-			s++;
-		else
-			break;
-	return (s);
+	unsigned int i;
+
+	i = 0;
+	while (str[i] != '\0')
+	{
+		i++;
+	}
+	return (i);
 }
 
 /*
- * main - multiply two  positive integer strings of arbitrary size
+ * init - Initialize an array with 0
+ * @arr: The array to initialize
+ * @size: Size of the array
  *
- * @ac: number of arguments
- * @av: arugments
- *
- * Return: 0 if successful, 98 if failure
+ * Return: Pointer to array
  */
-int main(int ac, char **av)
+char *init(char *arr, int size)
 {
-	long int len1, len2, lenres, i, j;
+	int i;
+
+	i = 0;
+	while (i < size)
+	{
+		arr[i] = '0';
+		i++;
+	}
+	return (arr);
+}
+
+/*
+ * _isstrdigit - Check if input is only numbers
+ * @str: Given input to check
+ *
+ * Return: 1 if a number, 0 if otherwise
+ */
+int _isstrdigit(char *str)
+{
+	int i;
+
+	i = 0;
+	while (str[i] != '\0')
+	{
+		if (str[i] < '0' || str[i] > '9')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+/*
+ * mul - Multiply two strings together
+ * @num1: The first number, as a string
+ * @num2: The second number, as a string
+ * @len1: The length of the first string
+ * @len2: The length of the second string
+ *
+ * Return: Pointer to char array
+ */
+char *mul(char *num1, char *num2, int len1, int len2)
+{
+	int i, prod, j, carry, k, digit, reslen;
 	char *res;
 
-	if (ac != 3)
+	reslen = len1 + len2 + 1;
+	res = malloc(reslen * sizeof(char));
+	if (res == NULL)
+		print_err();
+	res = init(res, reslen);
+	i = len2 - 1; carry = k = digit = 0;
+	while (i >= 0 && k < (len1 + len2))
 	{
-		_prntstr("Error\n");
-		return (98);
-	}
-	av[2] = trimzero(av[2]);
-	av[1] = trimzero(av[1]);
-	if (*av[1] == '0' || *av[2] == '0')
-	{
-		_prntstr("0\n");
-		return (0);
-	}
-	len1 = numstrchk(av[1]);
-	len2 = numstrchk(av[2]);
-	lenres = len1 + len2;
-	res = _calloc_buffer(lenres + 1, sizeof(char));
-
-	for (i = lenres - 1, len1--; len1 >= 0; len1--, i += len2 - 1)
-		for (j = len2 - 1; j >= 0; j--, i--)
+		j = len1 - 1;
+		k = digit;
+		while (j >= 0)
 		{
-			res[i] = (av[1][len1] * av[2][j] % 10) + res[i];
-			res[i - 1] = (av[1][len1] * av[2][j] / 10) + res[i - 1];
-			if (res[i] > '9')
+			carry = 0;
+			prod = (num1[j] - '0') * (num2[i] - '0');
+			if (prod > 9)
+				carry += prod / 10;
+			prod = prod % 10;
+			if (((res[k] - '0') + prod) > 9)
 			{
-				res[i] -= 10;
-				res[i - 1]++;
+				carry += 1;
+				res[k] += (prod - 10);
 			}
+			else
+				res[k] += prod;
+			res[k + 1] += carry;
+			k++; j--;
 		}
+		i--; digit++;
+	}
+	if (res[k] == '0')
+		res[k] = '\0';
+	else
+		res[k + 1] = '\0';
+	return (res);
+}
 
-		if (*res == '0')
-			_prntstr(res + 1);
-		else
-			_prntstr(res);
+/*
+ * remove_zeroes - Remove zeroes from num
+ * @str: String to remove zeroes from
+ * @len: Length of string
+ *
+ * Return: Pointer to new string
+ */
+char *remove_zeroes(char *str, int len)
+{
+	int i, j;
+	char *nstr;
+
+	i = 0;
+	while (str[i] == '0' && str[i] != '\0')
+	{
+		i++;
+	}
+	if (len - i == 0)
+	{
+		nstr = malloc(2 * sizeof(*nstr));
+		nstr[0] = '0';
+		nstr[1] = '\0';
+		return (nstr);
+	}
+	else
+		len -= i;
+	nstr = malloc(len * sizeof(*nstr) + 1);
+	j = 0;
+	while (j < len)
+	{
+		nstr[j] = str[i];
+		j++;
+		i++;
+	}
+	nstr[j] = '\0';
+	return (nstr);
+}
+
+/*
+ * check_zero - Check to see if the number is zero or if zeroes need to be gone
+ * @str: Str to check for zeroes
+ * @len: len of string
+ *
+ * Return: Pointer to new num string
+ */
+char *check_zero(char *str, int len)
+{
+	char *num;
+	int i;
+
+
+	if (str[0] == '0' && len != 1)
+		num = remove_zeroes(str, len);
+	else if (str[0] == '0' && len == 1)
+	{
+		num = malloc(len + 1);
+		if (num == NULL)
+			print_err();
+		num[0] = '0';
+		num[1] = '\0';
+	}
+	else
+	{
+		num = malloc(len + 1);
+		if (num == NULL)
+			print_err();
+		i = 0;
+		while (i < len)
+		{
+			num[i] = str[i];
+			i++;
+		}
+		num[i] = '\0';
+	}
+	return (num);
+}
+
+/*
+ * main - Run all necessary functions to multply two strings as numbers
+ * @argc: Number of args
+ * @argv: Value of args
+ *
+ * Return: 0 on success
+ */
+int main(int argc, char *argv[])
+{
+	int len1, len2, anslen;
+	char *ans, *num1, *num2;
+
+
+	if (argc != 3)
+	{
+		print_err();
+		exit(98);
+	}
+	if (_isstrdigit(argv[1]) == 0 || _isstrdigit(argv[2]) == 0)
+	{
+		print_err();
+		exit(98);
+	}
+	len1 = str_len(argv[1]);
+	len2 = str_len(argv[2]);
+	num1 = check_zero(argv[1], len1);
+	if (*num1 == '0')
+	{
+		_putchar('0');
 		_putchar('\n');
-		free(res);
-
 		return (0);
+	}
+	num2 = check_zero(argv[2], len2);
+	if (*num2 == '0')
+	{
+		_putchar('0');
+		_putchar('\n');
+		return (0);
+	}
+	len1 = str_len(num1);
+	len2 = str_len(num2);
+	if (len1 > len2)
+		ans = mul(num1, num2, len1, len2);
+	else
+		ans = mul(num2, num1, len2, len1);
+	anslen = str_len(ans);
+	rev_string(ans, anslen);
+	print_str(ans);
+	free(ans); free(num1); free(num2);
+	return (0);
 }
