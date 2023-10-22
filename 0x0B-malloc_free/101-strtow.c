@@ -27,10 +27,10 @@ char **strtow(char *str)
 		return (NULL);
 	while (*str)
 	{
-		while (*str == ' ' &&*str)
+		while (*str == ' ' && *str)
 			++str;
 		wlen = 0;
-		while (*(str + wlen) != ' ' &&*(str + wlen))
+		while (*(str + wlen) != ' ' && *(str + wlen))
 			++wlen;
 		temp = malloc((wlen + 1) * sizeof(char));
 		if (temp == NULL)
